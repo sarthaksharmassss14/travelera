@@ -51,15 +51,14 @@ export async function searchIataCode(cityName: string) {
 /**
  * Fetches real flight offers between two IATA codes.
  */
-export async function getFlightPrices(originIata: string, destIata: string, date: string) {
+export async function getFlightPrices(originIata: string, destIata: string, date: string, returnDate?: string) {
     try {
         const token = await getAmadeusToken();
-        const response = await axios.get(
-            `https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=${originIata}&destinationLocationCode=${destIata}&departureDate=${date}&adults=1&nonStop=false&max=5&currencyCode=USD`,
-            {
-                headers: { Authorization: `Bearer ${token}` },
-            }
-        );
+        const url = `https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=${originIata}&destinationLocationCode=${destIata}&departureDate=${date}${returnDate ? `&returnDate=${returnDate}` : ''}&adults=1&nonStop=false&max=5&currencyCode=USD`;
+
+        const response = await axios.get(url, {
+            headers: { Authorization: `Bearer ${token}` },
+        });
 
         return response.data.data || [];
     } catch (error: any) {

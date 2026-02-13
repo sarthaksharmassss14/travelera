@@ -9,6 +9,12 @@ import { Button } from "@/components/ui/button";
 import { Download, ChevronLeft, Calendar as CalendarIcon, MapPin } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
+
+const TravelMap = dynamic(() => import("@/components/TravelMap"), {
+    ssr: false,
+    loading: () => <div className="h-[400px] w-full bg-slate-900/50 rounded-xl animate-pulse border border-slate-800" />
+});
 
 export default function ItineraryPage() {
     const [data, setData] = useState<any>(null);
@@ -54,6 +60,17 @@ ${day.activities.map((a: any) => `- **${a.time}**: ${a.description} (@ ${a.locat
         a.click();
     };
 
+    const formatValue = (val: any) => {
+        if (!val) return "";
+        if (typeof val === 'string') return val;
+        if (typeof val === 'object') {
+            // If it's the specific object seen in the error: {duration, type, destination, transport, budget}
+            // Or similar, just pick the most descriptive field or stringify
+            return val.summary || val.description || val.label || val.destination || JSON.stringify(val);
+        }
+        return String(val);
+    };
+
     return (
         <div className="max-w-6xl mx-auto px-4 py-12 space-y-12">
             <div className="flex flex-col md:flex-row justify-between items-start gap-6">
@@ -62,14 +79,17 @@ ${day.activities.map((a: any) => `- **${a.time}**: ${a.description} (@ ${a.locat
                         <ChevronLeft className="h-4 w-4" /> Back to Planner
                     </Link>
                     <div className="flex items-center gap-3 text-slate-500 text-sm font-medium uppercase tracking-widest">
-                        <span>{data.sourceCity}</span>
+                        <span>{formatValue(data.sourceCity)}</span>
                         <div className="h-px w-8 bg-slate-800" />
-                        <span className="text-cyan-400">{data.destination}</span>
+                        <span className="text-cyan-400">{formatValue(data.destination)}</span>
                     </div>
-                    <h1 className="text-4xl font-extrabold tracking-tight">Your Journey in {data.destination}</h1>
-                    <p className="text-slate-400 max-w-2xl">{data.trip_summary}</p>
+                    <h1 className="text-4xl font-extrabold tracking-tight">Your Journey in {formatValue(data.destination)}</h1>
+                    <p className="text-slate-400 max-w-2xl">{formatValue(data.trip_summary)}</p>
                 </div>
-                <Button onClick={handleExport} className="bg-gradient-to-r from-emerald-500 to-teal-600 font-bold shadow-lg shadow-emerald-900/20">
+                <Button
+                    onClick={handleExport}
+                    className="bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-600 border-none font-bold shadow-lg shadow-cyan-900/20 hover:scale-105 transition-transform"
+                >
                     <Download className="mr-2 h-4 w-4" /> Export Manifesto
                 </Button>
             </div>
@@ -77,11 +97,12 @@ ${day.activities.map((a: any) => `- **${a.time}**: ${a.description} (@ ${a.locat
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <div className="lg:col-span-2 space-y-8">
                     <ItineraryTimeline plans={data.daily_plans} />
+                    <WeatherWidget destination={data.destination} tripDays={data.daily_plans?.length} />
                 </div>
                 <div className="space-y-6">
-                    <ExpenditureReport breakdown={data.budget_breakdown} />
+                    <TravelMap plans={data.daily_plans} />
+                    <ExpenditureReport breakdown={data.budget_breakdown} travelers={data.travelers} />
                     <CountryInsights destination={data.destination} />
-                    <WeatherWidget destination={data.destination} tripDays={data.daily_plans?.length} />
 
                     <div className="p-6 rounded-2xl bg-slate-900/50 border border-slate-800 space-y-4">
                         <h3 className="text-lg font-bold flex items-center gap-2 text-cyan-400">

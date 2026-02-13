@@ -1,20 +1,18 @@
 import TripWizard from "@/components/TripWizard";
 import { UserButton, SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
 import { PlaneTakeoff, Globe, MapPin } from "lucide-react";
+import HeroBackground from "@/components/HeroBackground";
 
 export default function Home() {
   return (
     <main className="relative flex flex-col items-center justify-center min-h-screen px-4 overflow-hidden">
-      {/* Background patterns */}
-      <div className="absolute inset-0 z-0">
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-500/10 blur-[120px] rounded-full" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-cyan-500/10 blur-[120px] rounded-full" />
-      </div>
+      {/* Background Slideshow */}
+      <HeroBackground />
 
       <nav className="fixed top-0 w-full z-50 p-6 flex justify-between items-center backdrop-blur-sm">
         <div className="flex items-center gap-2">
           <PlaneTakeoff className="h-8 w-8 text-cyan-400" />
-          <span className="text-xl font-bold tracking-tight">Travelera</span>
+          <span className="text-xl font-bold tracking-tight text-white/90">Travelera</span>
         </div>
         <div className="flex items-center gap-4">
           <SignedIn>
@@ -22,7 +20,7 @@ export default function Home() {
           </SignedIn>
           <SignedOut>
             <SignInButton mode="modal">
-              <button className="px-4 py-2 rounded-full bg-slate-800 hover:bg-slate-700 transition-colors text-sm font-medium">
+              <button className="px-4 py-2 rounded-full bg-indigo-600/80 hover:bg-indigo-600 transition-colors text-white text-sm font-medium backdrop-blur-md border border-white/10">
                 Sign In
               </button>
             </SignInButton>
@@ -30,15 +28,15 @@ export default function Home() {
         </div>
       </nav>
 
-      <section className="relative z-10 w-full max-w-5xl text-center space-y-12">
-        <div className="space-y-4">
-          <h1 className="text-5xl md:text-7xl font-extrabold tracking-tighter">
+      <section className="relative z-10 w-full max-w-5xl text-center space-y-12 pt-20">
+        <div className="space-y-6">
+          <h1 className="text-5xl md:text-8xl font-black tracking-tighter text-white drop-shadow-2xl">
             Your Next Path, <br />
-            <span className="bg-gradient-to-r from-cyan-400 via-indigo-500 to-purple-600 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-cyan-300 via-blue-500 to-purple-600 bg-clip-text text-transparent animate-text-gradient">
               Defined by AI
             </span>
           </h1>
-          <p className="text-slate-400 text-lg md:text-xl max-w-2xl mx-auto">
+          <p className="text-slate-200 text-lg md:text-xl max-w-2xl mx-auto drop-shadow-md">
             Experience the future of travel planning. Tell us where, when, and how you want to roam.
             We'll handle the rest.
           </p>
@@ -49,25 +47,25 @@ export default function Home() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-12">
-          <div className="p-6 rounded-2xl bg-slate-900/40 border border-slate-800/50 backdrop-blur-sm">
+          <div className="p-6 rounded-2xl bg-black/40 border border-white/10 backdrop-blur-md hover:bg-black/50 transition-colors">
             <Globe className="h-10 w-10 text-cyan-400 mb-4 mx-auto" />
-            <h3 className="text-lg font-bold mb-2">Global Insights</h3>
-            <p className="text-slate-500 text-sm">Deep cultural and currency data for every country.</p>
+            <h3 className="text-lg font-bold mb-2 text-white">Global Insights</h3>
+            <p className="text-slate-300 text-sm">Deep cultural and currency data for every country.</p>
           </div>
-          <div className="p-6 rounded-2xl bg-slate-900/40 border border-slate-800/50 backdrop-blur-sm">
+          <div className="p-6 rounded-2xl bg-black/40 border border-white/10 backdrop-blur-md hover:bg-black/50 transition-colors">
             <MapPin className="h-10 w-10 text-indigo-400 mb-4 mx-auto" />
-            <h3 className="text-lg font-bold mb-2">Dynamic Itinerary</h3>
-            <p className="text-slate-500 text-sm">Hour-by-hour plans tailored to your budget.</p>
+            <h3 className="text-lg font-bold mb-2 text-white">Dynamic Itinerary</h3>
+            <p className="text-slate-300 text-sm">Hour-by-hour plans tailored to your budget.</p>
           </div>
-          <div className="p-6 rounded-2xl bg-slate-900/40 border border-slate-800/50 backdrop-blur-sm">
+          <div className="p-6 rounded-2xl bg-black/40 border border-white/10 backdrop-blur-md hover:bg-black/50 transition-colors">
             <PlaneTakeoff className="h-10 w-10 text-purple-400 mb-4 mx-auto" />
-            <h3 className="text-lg font-bold mb-2">Cost Estimator</h3>
-            <p className="text-slate-500 text-sm">Real-time flight and hotel price benchmarks.</p>
+            <h3 className="text-lg font-bold mb-2 text-white">Cost Estimator</h3>
+            <p className="text-slate-300 text-sm">Real-time flight and hotel price benchmarks.</p>
           </div>
         </div>
       </section>
 
-      <footer className="mt-20 py-10 text-slate-600 text-sm border-t border-slate-900/50 w-full text-center">
+      <footer className="mt-20 py-10 text-slate-400 text-sm border-t border-white/10 w-full text-center backdrop-blur-sm">
         &copy; 2024 Travelera AI. Built for the modern traveler.
       </footer>
     </main>
