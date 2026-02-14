@@ -66,7 +66,7 @@ export default function Home() {
       </section>
 
       <footer className="mt-20 py-10 text-slate-400 text-sm border-t border-white/10 w-full text-center backdrop-blur-sm">
-        &copy; 2024 Travelera AI. Built for the modern traveler.
+        &copy; 2026 Travelera AI. Built for the modern traveler.
       </footer>
     </main>
   );

@@ -49,12 +49,12 @@ export async function searchIataCode(cityName: string) {
 }
 
 /**
- * Fetches real flight offers between two IATA codes.
+ * Fetches real flight offers between two IATA codes with travel class support.
  */
-export async function getFlightPrices(originIata: string, destIata: string, date: string, returnDate?: string) {
+export async function getFlightPrices(originIata: string, destIata: string, date: string, returnDate?: string, travelClass: string = "ECONOMY") {
     try {
         const token = await getAmadeusToken();
-        const url = `https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=${originIata}&destinationLocationCode=${destIata}&departureDate=${date}${returnDate ? `&returnDate=${returnDate}` : ''}&adults=1&nonStop=false&max=5&currencyCode=USD`;
+        const url = `https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=${originIata}&destinationLocationCode=${destIata}&departureDate=${date}${returnDate ? `&returnDate=${returnDate}` : ''}&adults=1&nonStop=false&max=5&currencyCode=USD&travelClass=${travelClass}`;
 
         const response = await axios.get(url, {
             headers: { Authorization: `Bearer ${token}` },
@@ -63,6 +63,35 @@ export async function getFlightPrices(originIata: string, destIata: string, date
         return response.data.data || [];
     } catch (error: any) {
         console.error("AMADEUS_FLIGHT_ERROR", error.response?.data || error.message);
+        return [];
+    }
+}
+
+/**
+ * Fetches hotel pricing benchmarks for a given city with star rating filtering.
+ */
+export async function getHotelPrices(cityCode: string, checkInDate: string, adults: number = 1, ratings: string = "3") {
+    try {
+        const token = await getAmadeusToken();
+
+        // Step 1: Find hotels in city with specific ratings
+        const hotelListUrl = `https://test.api.amadeus.com/v1/reference-data/locations/hotels/by-city?cityCode=${cityCode}&radius=5&radiusUnit=KM&hotelSource=ALL&ratings=${ratings}`;
+        const listResponse = await axios.get(hotelListUrl, {
+            headers: { Authorization: `Bearer ${token}` },
+        });
+
+        const hotelIds = listResponse.data.data?.slice(0, 3).map((h: any) => h.hotelId);
+        if (!hotelIds || hotelIds.length === 0) return [];
+
+        // Step 2: Get offers for these specific hotels
+        const offersUrl = `https://test.api.amadeus.com/v3/shopping/hotel-offers?hotelIds=${hotelIds.join(",")}&adults=${adults}&checkInDate=${checkInDate}&roomQuantity=1&bestRateOnly=true`;
+        const offersResponse = await axios.get(offersUrl, {
+            headers: { Authorization: `Bearer ${token}` },
+        });
+
+        return offersResponse.data.data || [];
+    } catch (error: any) {
+        console.error("AMADEUS_HOTEL_ERROR", error.response?.data || error.message);
         return [];
     }
 }
