@@ -17,6 +17,7 @@ export default function LocationInput({ placeholder, value, onChange, icon: Icon
     const [loading, setLoading] = useState(false);
     const [showDropdown, setShowDropdown] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
+    const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -25,7 +26,10 @@ export default function LocationInput({ placeholder, value, onChange, icon: Icon
             }
         };
         document.addEventListener("mousedown", handleClickOutside);
-        return () => document.removeEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+            if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+        };
     }, []);
 
     const fetchSuggestions = async (query: string) => {
@@ -36,9 +40,11 @@ export default function LocationInput({ placeholder, value, onChange, icon: Icon
 
         setLoading(true);
         try {
+            console.log("Fetching suggestions for:", query);
             const res = await axios.get(
                 `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query)}&count=5&language=en&format=json`
             );
+            console.log("Suggestions received:", res.data.results);
             setSuggestions(res.data.results || []);
         } catch (error) {
             console.error("Geocoding error:", error);
@@ -49,18 +55,19 @@ export default function LocationInput({ placeholder, value, onChange, icon: Icon
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const val = e.target.value;
-        onChange(val); // Always update parent state immediately
+        onChange(val);
         setShowDropdown(true);
 
-        // Debounce simple implementation
-        const timeoutId = setTimeout(() => {
+        if (typingTimeoutRef.current) {
+            clearTimeout(typingTimeoutRef.current);
+        }
+
+        typingTimeoutRef.current = setTimeout(() => {
             fetchSuggestions(val);
         }, 300);
-        return () => clearTimeout(timeoutId);
     };
 
     const handleSelect = (s: any) => {
-        // If s is a string (manual entry), use it directly. Otherwise format the API result.
         const formatted = typeof s === 'string' ? s : `${s.name}, ${s.country}`;
         onChange(formatted);
         setSuggestions([]);
@@ -74,15 +81,15 @@ export default function LocationInput({ placeholder, value, onChange, icon: Icon
                     placeholder={placeholder}
                     value={value}
                     onChange={handleChange}
-                    onFocus={() => value.length >= 3 && setShowDropdown(true)}
-                    className="bg-slate-950/50 border-slate-700 pl-10"
+                    onFocus={() => value.length >= 2 && setShowDropdown(true)}
+                    className="bg-slate-950/50 border-slate-700 pl-10 h-12 rounded-xl"
                 />
-                {Icon && <Icon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />}
-                {loading && <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin text-slate-500" />}
+                {Icon && <Icon className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-500" />}
+                {loading && <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 animate-spin text-slate-500" />}
             </div>
 
-            {showDropdown && value.length >= 2 && (
-                <div className="absolute z-50 w-full mt-2 bg-slate-900 border border-slate-800 rounded-xl shadow-2xl overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200 text-left">
+            {showDropdown && value.length > 0 && (
+                <div className="absolute z-[9999] w-full mt-2 bg-slate-900 border border-slate-800 rounded-xl shadow-2xl overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200 text-left">
                     {/* OPTION 1: Use exactly what user typed */}
                     <button
                         className="w-full px-4 py-3 text-left hover:bg-slate-800 transition-colors flex items-center gap-3 border-b border-slate-800"
