@@ -38,21 +38,21 @@ export default function Home() {
           </h1>
           <p className="text-slate-200 text-lg md:text-xl max-w-2xl mx-auto drop-shadow-md">
             Experience the future of travel planning. Tell us where, when, and how you want to roam.
-            We'll handle the rest.
+            We&apos;ll handle the rest.
           </p>
         </div>
 
-        <div className="w-full">
+        <div className="w-full relative z-30">
           <TripWizard />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-12 relative z-10">
           <div className="p-6 rounded-2xl bg-black/40 border border-white/10 backdrop-blur-md hover:bg-black/50 transition-colors">
             <Globe className="h-10 w-10 text-cyan-400 mb-4 mx-auto" />
             <h3 className="text-lg font-bold mb-2 text-white">Global Insights</h3>
             <p className="text-slate-300 text-sm">Deep cultural and currency data for every country.</p>
           </div>
-          <div className="p-6 rounded-2xl bg-black/40 border border-white/10 backdrop-blur-md hover:bg-black/50 transition-colors">
+          <div className="p-6 rounded-2xl bg-black/40 border border-white/10 backdrop-blur-md hover:bg-black/50 transition-colors relative">
             <MapPin className="h-10 w-10 text-indigo-400 mb-4 mx-auto" />
             <h3 className="text-lg font-bold mb-2 text-white">Dynamic Itinerary</h3>
             <p className="text-slate-300 text-sm">Hour-by-hour plans tailored to your budget.</p>

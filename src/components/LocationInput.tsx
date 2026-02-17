@@ -75,7 +75,7 @@ export default function LocationInput({ placeholder, value, onChange, icon: Icon
     };
 
     return (
-        <div className="relative w-full" ref={dropdownRef}>
+        <div className={`relative w-full ${showDropdown ? 'z-[100]' : 'z-0'}`} ref={dropdownRef}>
             <div className="relative">
                 <Input
                     placeholder={placeholder}
