@@ -247,12 +247,12 @@ export default function TripWizard() {
                             <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
                                 <div className="space-y-4">
                                     <Label className="text-slate-300 text-lg">When are you traveling?</Label>
-                                    <div className="flex justify-center border border-slate-700 rounded-xl p-4 bg-slate-950/30 backdrop-blur-sm">
+                                    <div className="w-full">
                                         <Calendar
                                             mode="range"
                                             selected={formData.range}
                                             onSelect={(range) => setFormData({ ...formData, range: range as any })}
-                                            className="rounded-md"
+                                            className="w-full"
                                             disabled={{ before: startOfToday() }}
                                         />
                                     </div>
